@@ -15,7 +15,7 @@ function PageLoaded() {
     SetupScrollEvent();
     ConstructTimeLines();
     ConstructRecipes();
-    GenereateGithubEmbeds();
+    GenereateGithubEmbeds("https://api.github.com/repos/Adrigorithm/Adribot");
 }
 
 function SetupScrollEvent() {
@@ -34,11 +34,13 @@ function SetupScrollEvent() {
 
 function GenereateGithubEmbeds(...urls) {
     let dataLoader = new DataLoader();
-    let embeds = {};
 
     urls.forEach(url => {
-        dataLoader.FetchData("https://api.github.com/repos/Adrigorithm/Adribot", RequestMethod.GET, { "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" }).then((data) => {
-            embeds[data.name] = GithubEmbedder.fromPublicRepoJSON(data);
+        dataLoader.FetchData(url, RequestMethod.GET, { "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" }).then((data) => {
+            let html = GithubEmbedder.fromPublicRepoJSON(data);
+
+            let githubEmbedParent = document.getElementById([data.name]);
+            githubEmbedParent.appendChild(html);
         })
     });
 }
