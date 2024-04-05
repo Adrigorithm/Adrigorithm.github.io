@@ -14,7 +14,7 @@ Welcome to my personal website! This project showcases my interests, skills, and
 My website is a can be seen as extended version of a digital CV. It includes my interests, skills and so on. It's built using HTML, CSS [Tailwind CSS](https://tailwindcss.com/), and a touch of JavaScript (mainly used to generate dynamic content from JSON files and APIs).
 
 ## Installation
-1. Clone this repository: `git clone https://github.com/yourusername/my-static-website.git`
+1. Clone this repository: `git clone https://github.com/Adrigorithm/Adrigorithm.github.io.git`
 2. Open `index.html` in your browser to view the site locally (although it would be better to run a webserver).
 
 ## Usage
