@@ -36,6 +36,21 @@ class RecipeWindow {
             SetTextContent(headerTitle, WriteMode.SET, document.createTextNode(this.#recipes[index].name));
             headerTitle.classList.add("grow", "m-0", "text-center");
 
+            let servingsModifier = document.createElement("input");
+            servingsModifier.classList.add("dark:bg-zaffre", "bg-lightSteelBlue", "mr-1", "text-zaffre", "dark:text-lightSteelBlue", "border-2", "border-black", "dark:border-white")
+            servingsModifier.addEventListener("input", () => {
+                if (Number.isInteger(Number.parseInt(servingsModifier.value)) && servingsModifier.value > 0) {
+                    this.#recipes[index].ingredients.forEach(ingredient => {
+                        ingredient.UpdateQantities(this.#recipes[index].servings, servingsModifier.value);
+                    });
+
+                    this.#recipes[index].servings = servingsModifier.value;
+                    ingredientsContainer.lastChild.remove();
+                    ingredientsContainer.appendChild(this.GenerateIngredients(index));
+                }
+            });
+            servingsModifier.value = this.#recipes[index].servings;
+
             let closeButtonAnchor = document.createElement("a");
             closeButtonAnchor.setAttribute("href", "javascript: void(0);");
 
@@ -49,7 +64,7 @@ class RecipeWindow {
             recipeThumbnailImage.setAttribute("alt", `recipe id: ${index}`);
 
             closeButtonAnchor.appendChild(closeButtonImg);
-            headerContainer.append(headerTitle, closeButtonAnchor);
+            headerContainer.append(headerTitle, servingsModifier, closeButtonAnchor);
 
             let ingredientsContainer = document.createElement("div");
             ingredientsContainer.classList.add("flex", "flex-col");
@@ -58,15 +73,7 @@ class RecipeWindow {
             ingredientsTitle.classList.add("text-center");
             SetTextContent(ingredientsTitle, WriteMode.SET, document.createTextNode("Ingredients"));
 
-            let ingredientsList = document.createElement("ul");
-
-            this.#recipes[index].ingredients.forEach(ingredient => {
-                let ingredientsListItem = document.createElement("li");
-                SetTextContent(ingredientsListItem, WriteMode.SET, document.createTextNode(`${ingredient.name} ${ingredient.quantity}${ingredient.unit}`));
-                ingredientsList.appendChild(ingredientsListItem);
-            });
-
-            ingredientsContainer.append(ingredientsTitle, ingredientsList);
+            ingredientsContainer.append(ingredientsTitle, this.GenerateIngredients(index));
 
             let instructionsContainer = document.createElement("div");
             instructionsContainer.classList.add("flex", "flex-col");
@@ -96,7 +103,7 @@ class RecipeWindow {
             let recipeThumbnailLink = document.createElement("a");
             recipeThumbnailLink.classList.add("no-underline", "text-black", "dark:text-white");
             recipeThumbnailLink.setAttribute("href", "javascript: void(0);");
-            
+
             recipeThumbnailLink.addEventListener("click", () => {
                 this.Show(recipeContainer.classList, headerContainer.classList, recipeWrapper.classList);
             });
@@ -113,6 +120,18 @@ class RecipeWindow {
         }
 
         return recipeSection;
+    }
+
+    GenerateIngredients(recipeIndex) {
+        let ingredientsList = document.createElement("ul");
+
+        this.#recipes[recipeIndex].ingredients.forEach(ingredient => {
+            let ingredientsListItem = document.createElement("li");
+            SetTextContent(ingredientsListItem, WriteMode.SET, document.createTextNode(`${ingredient.name} ${ingredient.quantity}${ingredient.unit}`));
+            ingredientsList.appendChild(ingredientsListItem);
+        });
+
+        return ingredientsList;
     }
 
     Show(recipeContainerClassList, headerContainerClassList, recipeMainClassList) {
@@ -159,6 +178,10 @@ class Ingredient {
         this.unit = unit;
         this.alternatives = alternatives;
         this.isAlternative = isAlternative;
+    }
+
+    UpdateQantities(factorOld, factorNew) {
+        this.quantity = this.quantity * factorNew / factorOld;
     }
 }
 
