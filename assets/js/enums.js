@@ -24,6 +24,13 @@ const Temperature = {
     CELCIUS: 'C',
     FAHRENHEIT: 'F',
     KELVIN: 'K'
-}
+};
 
-export {WriteMode, RequestMethod, ContentType, OvenMode, Temperature};
+const Language = {
+    ENGLISH: "English",
+    DUTCH: "Dutch",
+    CATALAN: "Catalan",
+    NONE: "English"
+};
+
+export {WriteMode, RequestMethod, ContentType, OvenMode, Temperature, Language};
