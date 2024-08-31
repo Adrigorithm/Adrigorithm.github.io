@@ -1,12 +1,12 @@
 "use strict"
 
-import { CertificateStatus, WriteMode } from "./enums.js";
+import { CertificateStatus, Language, WriteMode } from "./enums.js";
 import { SetTextContent } from "./utilities.js";
 
 class CertificateCard {
     #certificates = new Map();
 
-    constructor(certificates) {
+    constructor(certificates, language) {
         certificates.forEach(certificate => {
             if (!this.#certificates.has(certificate.company)) {
                 this.#certificates.set(certificate.company, [certificate]);
@@ -18,9 +18,12 @@ class CertificateCard {
 
     ToDOMElements(){
         let cardsContainer = document.createElement("section");
+        let keyIterator = this.#certificates.keys();
+        let key = keyIterator.next();
 
-        this.#certificates.keys().forEach(company => {
-            let category = document.createElement("h2");
+        while (key.value){
+            let company = key.value;
+            let category = document.createElement("h3");
             category.classList.add("text-center");
             SetTextContent(category, WriteMode.APPEND, document.createTextNode(company));
 
@@ -32,13 +35,16 @@ class CertificateCard {
             });
 
             cardsContainer.append(category, cardsContainerInner);
-        });
+
+            key = keyIterator.next();
+        }
 
         return cardsContainer;
     }
 }
 
 class Certificate {
+    #currentLanguage = Language.NONE;
     image = null;
     reference = null;
     name = null;
@@ -48,7 +54,8 @@ class Certificate {
     expirationDate = null;
     status = null;
 
-    constructor(image, name, company, achievedDate, expirationDate = null, reference = null, description = null, status = CertificateStatus.COMPLETED) {
+    constructor(language, image, name, company, achievedDate, expirationDate = null, reference = null, description = null, status = CertificateStatus.COMPLETED) {
+        this.#currentLanguage = language;
         this.image = image;
         this.reference = reference;
         this.name = name;
@@ -59,6 +66,34 @@ class Certificate {
         this.status = status;
     }
 
+    OpenCertificateString(){
+        switch (this.#currentLanguage) {
+            case Language.CATALAN:
+                return "obre el meu certificat (en una pestanya nova)";
+            case Language.DUTCH:
+                return "opent mijn certificaat (in een nieuwe tab)";
+            default:
+                return "opens my certificate (in a new tab)";
+        }
+    }
+
+    CertificateValidityRangeString(){
+        switch (this.#currentLanguage) {
+            case Language.CATALAN:
+                return this.expirationDate
+                    ? `Aconseguit el: ${this.achievedDate} - Vàlid fins a: ${this.expirationDate}`
+                    : `Aconseguit el: ${this.achievedDate} - Vàlid per sempre`;
+            case Language.DUTCH:
+                return this.expirationDate
+                    ? `Behaald op: ${this.achievedDate} - Geldig tot: ${this.expirationDate}`
+                    : `Behaald op: ${this.achievedDate} - Voor altijd geldig :)`;
+            default:
+                return this.expirationDate
+                    ? `Achieved on: ${this.achievedDate} - Valid until: ${this.expirationDate}`
+                    : `Achieved on: ${this.achievedDate} - Valid forever :)`;
+        }
+    }
+
     ToDOMElement(){
         let card = document.createElement("div");
         card.classList.add("flex", "flex-col", "items-center");
@@ -67,19 +102,18 @@ class Certificate {
         SetTextContent(subtitle, WriteMode.APPEND, document.createTextNode(this.name));
 
         let imageAnchor = document.createElement("a");
-        imageAnchor.setAttribute("href", this.reference ?? "javascript:void(0)");
-        imageAnchor.setAttribute("title", "opens my certificate (in a new tab)");
+        imageAnchor.setAttribute("href", this.reference ?? "https://youtu.be/Y5NTgZA-xWE?t=18");
+        imageAnchor.setAttribute("title", this.OpenCertificateString());
         imageAnchor.setAttribute("target", "_blank");
 
         let image = document.createElement("img");
         image.setAttribute("src", this.image);
         image.setAttribute("width", "150px");
-        image.setAttribute("alt", `image of certificate: ${this.name}`);
+        image.setAttribute("height", "150px");
+        image.setAttribute("alt", this.name);
 
         let validity = document.createElement("p");
-        SetTextContent(validity, WriteMode.APPEND, document.createTextNode(this.expirationDate
-            ? `Achieved on: ${this.achievedDate} - Valid until: ${this.expirationDate}`
-            : `Achieved on: ${this.achievedDate} - Valid forever :)`));
+        SetTextContent(validity, WriteMode.APPEND, document.createTextNode(this.CertificateValidityRangeString()));
 
         let footer = document.createElement("p");
         footer.classList.add("py-2", "w-full", "text-center");
@@ -87,7 +121,7 @@ class Certificate {
             case CertificateStatus.COMPLETED:
             case CertificateStatus.COMPLETED_CAT:
             case CertificateStatus.COMPLETED_NL:
-                footer.style.backgroundColor = "green";
+                footer.style.backgroundColor = "darkgreen";
                 break;
             case CertificateStatus.IN_PROGRESS:
             case CertificateStatus.IN_PROGRESS_CAT:
@@ -98,10 +132,10 @@ class Certificate {
             case CertificateStatus.PLANNED:
             case CertificateStatus.PLANNED_CAT:
             case CertificateStatus.PLANNED_NL:
-                footer.style.backgroundColor = "grey";
+                footer.style.backgroundColor = "dimgrey";
                 break;
             default:
-                footer.style.backgroundColor = "green";
+                footer.style.backgroundColor = "darkgreen";
         }
         SetTextContent(footer, WriteMode.APPEND, document.createTextNode(this.status));
 

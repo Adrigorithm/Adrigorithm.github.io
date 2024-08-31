@@ -51,7 +51,7 @@ class TimeLine {
             let titleContainer = document.createElement("div");
             titleContainer.classList.add("flex", "flex-row", "items-center")
 
-            let title = document.createElement("h4");
+            let title = document.createElement("h3");
 
             let titleImage = document.createElement("img");
             titleImage.classList.add("h-6");
@@ -77,34 +77,38 @@ class TimeLine {
                 navContainer.classList.add("flex", "flex-row", "items-center", "justify-center", "w-full");
 
                 let navButtonLeft = document.createElement("a");
-                navButtonLeft.setAttribute("href", "javascript: void(0);");
+                navButtonLeft.setAttribute("href", "#");
 
                 let lChevronDouble = document.createElement("img");
-                lChevronDouble.classList.add("h-6");
                 lChevronDouble.setAttribute("src", "/assets/img/leftDouble.svg");
                 lChevronDouble.setAttribute("alt", "previousSlideIndicator");
+                lChevronDouble.setAttribute("width", "24px");
+                lChevronDouble.setAttribute("height", "24px");
 
                 let motd = document.createElement("p");
                 motd.classList.add("p-2");
                 motd.appendChild(document.createTextNode(`${this.#motd[Math.floor(Math.random() * this.#motd.length)]}`));
 
                 let navButtonRight = document.createElement("a");
-                navButtonRight.setAttribute("href", "javascript: void(0);");
+                navButtonRight.setAttribute("href", "#");
 
                 let rChevronDouble = document.createElement("img");
-                rChevronDouble.classList.add("h-6");
                 rChevronDouble.setAttribute("src", "/assets/img/rightDouble.svg");
                 rChevronDouble.setAttribute("alt", "nextSlideIndicator");
+                rChevronDouble.setAttribute("width", "24px");
+                rChevronDouble.setAttribute("height", "24px");
 
                 navButtonLeft.appendChild(lChevronDouble);
                 navButtonRight.appendChild(rChevronDouble);
 
                 // Active frame swapping
-                navButtonLeft.addEventListener("click", () => {
+                navButtonLeft.addEventListener("click", (e) => {
+                    e.preventDefault();
                     this.ActiveItemChange(container.parentElement, false);
                 })
 
-                navButtonRight.addEventListener("click", () => {
+                navButtonRight.addEventListener("click", (e) => {
+                    e.preventDefault();
                     this.ActiveItemChange(container.parentElement, true);
                 })
 

@@ -53,7 +53,7 @@ function GenereateGithubEmbeds(...urls) {
 
     urls.forEach(url => {
         dataLoader.FetchData(url, RequestMethod.GET, { "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" }).then((data) => {
-            let html = GithubEmbedder.fromPublicRepoJSON(data);
+            let html = GithubEmbedder.fromPublicRepoJSON(data, languageSwapper.currentLanguage);
 
             let githubEmbedParent = document.getElementById([data.name]);
             githubEmbedParent.appendChild(html);
@@ -70,13 +70,13 @@ function ConstructCertificates() {
     
     switch (languageSwapper.currentLanguage){
         case Language.ENGLISH:
-            url = "/assets/json/en_gb/certificates.json";
+            url = "/assets/json/en_gb/certificatesV1.json";
             break;
         case Language.CATALAN:
-            url = "/assets/json/cat/certificates.json";
+            url = "/assets/json/cat/certificatesV1.json";
             break;
         case Language.DUTCH:
-            url = "/assets/json/nl_be/certificates.json"
+            url = "/assets/json/nl_be/certificatesV1.json"
             break;
     }
 
@@ -86,8 +86,8 @@ function ConstructCertificates() {
         for (let index = 0; index < certificatesData.length; index++) {
             let certificate;
 
-            // Recipe :)
             certificate = new Certificate(
+                languageSwapper.currentLanguage,
                 certificatesData[index].image,
                 certificatesData[index].name,
                 certificatesData[index].company,
@@ -101,7 +101,7 @@ function ConstructCertificates() {
             certificates.push(certificate);
         };
 
-        certificatesContainer = new CertificateCard(certificates);
+        certificatesContainer = new CertificateCard(certificates, languageSwapper.currentLanguage);
         elementBefore.after(certificatesContainer.ToDOMElements());
     });
 }
