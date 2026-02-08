@@ -1,0 +1,53 @@
+* {
+    margin: 0;
+}
+
+body {
+    background: url(hearts.webp);
+    background-color: grey;
+    background-position: top;
+    background-repeat: no-repeat;
+    width: 100dvw;
+    height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#choice {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 1rem;
+}
+
+section {
+    display: flex;
+    justify-content: space-around;
+}
+
+#no {
+    background-color: dimgrey;
+    order: 1;
+}
+
+#yes {
+    background-color: green;
+    order: 0;
+}
+
+button {
+    border: none;
+    width: 33%;
+    font-size: 24px;
+}
+
+h1 {
+    color: red;
+    font-size: 48px;
+    margin-bottom: 1rem;
+}
+
+.great-vibes {
+    font-family: "Great Vibes", cursive;
+    font-weight: 700;
+    font-style: normal;
+}
