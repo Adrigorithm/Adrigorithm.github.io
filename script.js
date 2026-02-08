@@ -1,5 +1,6 @@
 const noButton = document.getElementById("no");
 const yesButton = document.getElementById("yes");
+let catPreloads = [];
 const cats = [
   "https://media.tenor.com/WesI8c7nMTEAAAAM/yaz-x-pai-stuffed-toy.gif",
   "https://media.tenor.com/wFxMAqCsQDoAAAAM/cats.gif",
@@ -16,6 +17,13 @@ const cats = [
 ];
 let firstButton = yesButton;
 let activeCat = -1;
+
+function preloadCats()
+{
+  for (const url of cats) {
+    catPreloads.push(new Image().src = url);
+  }
+}
 
 noButton.addEventListener("click", () => {
   if (firstButton === noButton) {
@@ -38,6 +46,8 @@ yesButton.addEventListener("click", () => {
     activateLoveScene();
   });
 });
+
+preloadCats();
 
 async function animateButton(callback) {
   const buttonAnimation = [
@@ -65,7 +75,7 @@ function activateLoveScene() {
   buttonContainer = yesButton.parentElement;
   buttonContainer.style.display = "none";
   buttonContainer.previousElementSibling.innerHTML =
-    "❤️ I love you forever! ❤️";
+    "❤ I love you forever! ❤";
 
   document.body.style.backgroundPosition = "";
   document.body.style.backgroundRepeat = "repeat";
